@@ -1,0 +1,25 @@
+{
+  "name": "gencomparator-backend",
+  "version": "1.0.0",
+  "description": "prisma setup for gencomparator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psymore/gencomparator-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/psymore/gencomparator-backend/issues"
+  },
+  "homepage": "https://github.com/psymore/gencomparator-backend#readme",
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "express": "^4.18.2",
+    "generate": "^0.14.0",
+    "prisma": "^5.7.0"
+  }
+}
