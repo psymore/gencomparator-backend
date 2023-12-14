@@ -9,15 +9,47 @@ datasource db {
 
 model user {
     id        String   @id @default(uuid())
-    email     String
-    createdAt DateTime
+    user_id   Int      @default(autoincrement())
+    email     String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model api_keys {
-    id        String   @id @default(uuid())
-    name      String
-    user_id   Int
-    key       String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id              String            @id @default(uuid())
+    name            String            @unique
+    user_id         Int               @default(autoincrement())
+    key             String            @unique
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    prompt          prompt[]
+    prompt_template prompt_template[]
+}
+
+model prompt_template {
+    id                 String   @id @default(uuid())
+    prompt_template_id Int?
+    title              String?
+    textfields         String?
+    CSS_frameworks     String?
+    text               String
+    llm_name           api_keys @relation(fields: [llm_name_id], references: [name])
+    llm_name_id        String
+    api_key_id         String
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+}
+
+model prompt {
+    id                 String   @id @default(uuid())
+    prompt_id          String
+    user_id            Int
+    prompt_template_id Int?
+    api_key            api_keys @relation(fields: [api_key_id], references: [key])
+    api_key_id         String
+    status             Boolean?
+    response           String?
+    parameters         String
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
 }
