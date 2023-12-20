@@ -7,49 +7,56 @@ datasource db {
     url      = env("DB_URL")
 }
 
-model user {
-    id        String   @id @default(uuid())
-    user_id   Int      @default(autoincrement())
-    email     String   @unique
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+    id               String            @id @default(uuid())
+    user_id          Int               @default(autoincrement())
+    email            String            @unique
+    Name             String?           @default("Anonymous")
+    MagicLink        String?           @default(uuid()) // Assuming you want to generate a UUID by default
+    MagicLinkExpired Boolean           @default(false)
+    createdAt        DateTime          @default(now())
+    updatedAt        DateTime          @updatedAt
+    api_keys         Api_keys[]
+    prompt_template  Prompt_template[]
+    prompt           Prompt[]
 }
 
-model api_keys {
+model Api_keys {
     id              String            @id @default(uuid())
     name            String            @unique
-    user_id         Int               @default(autoincrement())
-    key             String            @unique
+    user            User              @relation(fields: [user_id], references: [id])
+    user_id         String
+    key             String
     createdAt       DateTime          @default(now())
     updatedAt       DateTime          @updatedAt
-    prompt          prompt[]
-    prompt_template prompt_template[]
+    prompt_template Prompt_template[]
 }
 
-model prompt_template {
-    id                 String   @id @default(uuid())
-    prompt_template_id Int?
-    title              String?
-    textfields         String?
-    CSS_frameworks     String?
-    text               String
-    llm_name           api_keys @relation(fields: [llm_name_id], references: [name])
-    llm_name_id        String
-    api_key_id         String
-    createdAt          DateTime @default(now())
-    updatedAt          DateTime @updatedAt
+model Prompt_template {
+    id             String    @id @default(uuid())
+    user           User      @relation(fields: [user_id], references: [id])
+    user_id        String
+    title          String?
+    textfields     String?
+    CSS_frameworks String?
+    text           String
+    llm_name       Api_keys? @relation(fields: [llm_name_id], references: [name])
+    llm_name_id    String?
+    api_key_id     String?
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
 }
 
-model prompt {
+model Prompt {
     id                 String   @id @default(uuid())
+    user               User     @relation(fields: [user_id], references: [id])
+    user_id            String
     prompt_id          String
-    user_id            Int
-    prompt_template_id Int?
-    api_key            api_keys @relation(fields: [api_key_id], references: [key])
-    api_key_id         String
+    prompt_template_id Int      @default(autoincrement())
     status             Boolean?
     response           String?
     parameters         String
     createdAt          DateTime @default(now())
     updatedAt          DateTime @updatedAt
+    api_keysId         String?
 }
