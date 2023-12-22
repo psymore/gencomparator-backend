@@ -1,7 +1,9 @@
-const router = require("express").Router();
-const controller = require("../controllers/users").default;
+import { Router } from "express";
+const router = Router();
+
+import controller from "../controllers/users.js";
 
 router.post("/enter", controller.login);
 router.post("/verify", controller.verify_token);
 
-module.exports = router;
+export default router;

@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { sign, verify } from "jsonwebtoken";
-import { isEmail } from "validator";
+import jwt from "jsonwebtoken";
+const { sign, verify } = jwt;
+
+import isEmail from "validator/lib/isEmail.js";
 const jwt_secret = process.env.MY_SECRET;
 import { v4 as uuidv4 } from "uuid";
-import { send_magic_link } from "./emails.js";
+import send_magic_link from "./emails.js";
 
 const register = async email => {
   try {

@@ -1,4 +1,6 @@
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
+
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -49,4 +51,4 @@ const send_magic_link = async (email, link, which) => {
   }
 };
 
-module.exports = { send_magic_link };
+export default send_magic_link;
