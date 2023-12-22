@@ -1,7 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-module.exports = function (app) {
+export const saveApiKeys = app => {
   app.post("/save-keys", async (req, res) => {
     try {
       const { userId, PalmApiKey, OpenAiApiKey, BardApiKey, CodyApiKey } =

@@ -1,9 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 
-const express = require("express");
-const cors = require("cors");
+import express, { json } from "express";
+import cors from "cors";
 const app = express();
-const path = require("path");
+import path from "path";
 // const setupLoginRoute = require("./routes/login");
 // const setupAddRoute = require("./routes/add");
 var corsOptions = {
@@ -12,7 +12,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 // app.use(require("express").urlencoded({ extended: true }));
-app.use(express.json());
+app.use(json());
 
 const prisma = new PrismaClient();
 
@@ -93,9 +93,12 @@ app.post("/prompt-template", async (req, res) => {
   }
 });
 
-require("./app/routes/api_keys.routes")(app);
-app.use("/users", require("./app/routes/users"));
-
+// require("./app/routes/api_keys.routes.js").default(app);
+import { saveApiKeys } from "./app/routes/api_keys.routes.js";
+saveApiKeys(app);
+// app.use("/users", require("./app/routes/users"));
+import userRoutes from "./app/routes/users.js";
+app.use("/users", userRoutes);
 // //SSO Login from https://hackernoon.com/how-to-build-a-passwordless-authentication-with-email-and-jwt-o33w3311
 // app.post("/login", (req, res) => {
 //   const { email } = req.body;
