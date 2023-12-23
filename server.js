@@ -99,40 +99,8 @@ saveApiKeys(app);
 // app.use("/users", require("./app/routes/users"));
 import userRoutes from "./app/routes/users.js";
 app.use("/users", userRoutes);
-// //SSO Login from https://hackernoon.com/how-to-build-a-passwordless-authentication-with-email-and-jwt-o33w3311
-// app.post("/login", (req, res) => {
-//   const { email } = req.body;
-//   if (!email) {
-//     res.status(404);
-//     res.send({
-//       message: "You didn't enter a valid email address.",
-//     });
-//   }
-//   const token = makeToken(email);
-//   const mailOptions = {
-//     from: "You Know",
-//     html: emailTemplate({
-//       email,
-//       link: `http://localhost:8080/account?token=${token}`,
-//     }),
-//     subject: "Your Magic Link",
-//     to: email,
-//   };
-//   return transport.sendMail(mailOptions, error => {
-//     if (error) {
-//       res.status(404);
-//       res.send("Can't send email.");
-//     } else {
-//       res.status(200);
-//       res.send(
-//         `Magic link sent. : http://localhost:8080/account?token=${token}`
-//       );
-//     }
-//   });
-// });
 
-// app.listen(PORT, () => {
-//   console.log(`Example app listening at http://localhost:${PORT}`);
-// });
+import { createPrompt } from "./app/controllers/fillTemplates.js";
+createPrompt(app);
 
 app.listen(3001, () => console.log(`Server running on port ${3001}`));

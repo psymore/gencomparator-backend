@@ -16,7 +16,7 @@ export const saveApiKeys = app => {
 
       const savedKeys = await Promise.all(
         keysToSave.map(async keyData => {
-          const apiKeys = await prisma.Api_keys.upsert({
+          const apiKeys = await prisma.api_keys.upsert({
             where: { name: keyData.llmName },
             create: { name: keyData.llmName, key: keyData.key },
             update: { key: keyData.key },
