@@ -17,14 +17,14 @@ app.use(json());
 const prisma = new PrismaClient();
 
 app.get("/", async (req, res) => {
-  const allUsers = await prisma.User.findMany();
+  const allUsers = await prisma.user.findMany();
   res.json(allUsers);
 });
 
 app.post("/", async (req, res) => {
   try {
     const { email } = req.body;
-    const newUser = await prisma.User.create({
+    const newUser = await prisma.user.create({
       data: {
         email,
       },
@@ -41,7 +41,7 @@ app.put("/:id", async (req, res) => {
     const userId = req.params.id;
     const newEmail = req.body.email;
 
-    const updatedUser = await prisma.User.update({
+    const updatedUser = await prisma.user.update({
       where: {
         id: userId,
       },
@@ -63,7 +63,7 @@ app.delete("/:id", async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const deletedUser = await prisma.User.delete({
+    const deletedUser = await prisma.user.delete({
       where: {
         id: userId,
       },
@@ -80,7 +80,7 @@ app.post("/prompt-template", async (req, res) => {
   try {
     const { text } = req.body;
 
-    const promptTemplate = await prisma.Prompt_template.create({
+    const promptTemplate = await prisma.prompt_template.create({
       data: {
         text: text,
         api_key_id: "asdasd",
@@ -93,14 +93,25 @@ app.post("/prompt-template", async (req, res) => {
   }
 });
 
-// require("./app/routes/api_keys.routes.js").default(app);
-import { saveApiKeys } from "./app/routes/api_keys.routes.js";
-saveApiKeys(app);
-// app.use("/users", require("./app/routes/users"));
+import saveApiKeys from "./app/routes/apiKey.js";
+app.use(saveApiKeys);
+
 import userRoutes from "./app/routes/users.js";
 app.use("/users", userRoutes);
 
+import { verifyToken } from "./app/middleware/authJwt.js";
+app.use("/users/verify", verifyToken);
+
 import { createPrompt } from "./app/controllers/fillTemplates.js";
 createPrompt(app);
+
+// import { useGemini } from "./app/llms/generativeAi.js";
+// useGemini();
+
+// import { useChatGpt } from "./app/llms/openAi.js";
+// useChatGpt();
+
+// import { useAlephAlpha } from "./app/llms/alephAlpha.js";
+// useAlephAlpha();
 
 app.listen(3001, () => console.log(`Server running on port ${3001}`));

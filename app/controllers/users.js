@@ -1,20 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import jwt from "jsonwebtoken";
-const { sign, verify } = jwt;
+const { sign } = jwt;
 
 import isEmail from "validator/lib/isEmail.js";
-const jwt_secret = process.env.MY_SECRET;
+const jwtSecret = process.env.MY_SECRET;
 import { v4 as uuidv4 } from "uuid";
-import send_magic_link from "./emails.js";
+import sendMagicLink from "./emails.js";
 
 const register = async email => {
   try {
     const newUser = {
-      data: { email: email, MagicLink: uuidv4() },
+      data: { email: email, magicLink: uuidv4() },
     };
-    const user = await prisma.User.create(newUser);
-    send_magic_link(email, user.MagicLink, "signup");
+    const user = await prisma.user.create(newUser);
+    sendMagicLink(email, user.magicLink, "signup");
     return { ok: true, message: "User created" };
   } catch (error) {
     console.error("Error registering user:", error);
@@ -30,7 +30,7 @@ const login = async (req, res) => {
     return res.json({ ok: false, message: "Invalid email provided" });
 
   try {
-    let user = await prisma.User.findUnique({ where: { email: email } });
+    let user = await prisma.user.findUnique({ where: { email: email } });
 
     if (!user) {
       let reg = await register(email);
@@ -39,48 +39,39 @@ const login = async (req, res) => {
         message:
           "Your account has been created. Click the link in email to sign in 👻",
       });
-    } else if (!magicLink) {
-      user = await prisma.User.update({
+    }
+
+    if (!magicLink) {
+      user = await prisma.user.update({
         where: { email: email },
-        data: { MagicLink: uuidv4(), MagicLinkExpired: false },
+        data: { magicLink: uuidv4(), magicLinkExpired: false },
       });
-      send_magic_link(email, user.MagicLink);
+      sendMagicLink(email, user.magicLink);
       return res.send({
         ok: true,
         message: "Hit the link in email to sign in",
       });
-    } else if (user.MagicLink == magicLink && !user.MagicLinkExpired) {
-      const token = sign({ userId: user.id }, jwt_secret, {
+    }
+
+    if (user.magicLink == magicLink && !user.magicLinkExpired) {
+      const token = sign({ userId: user.id }, jwtSecret, {
         expiresIn: "1h",
       });
-      await prisma.User.update({
+      await prisma.user.update({
         where: { email: email },
-        data: { MagicLinkExpired: true },
+        data: { magicLinkExpired: true },
       });
       return res.json({ ok: true, message: "Welcome back", token, email });
-    } else {
-      return res.json({
-        ok: false,
-        message: "Magic link expired or incorrect 🤔",
-      });
     }
+
+    return res.json({
+      ok: false,
+      message: "Magic link expired or incorrect 🤔",
+    });
   } catch (error) {
     console.error("Error logging in:", error);
     return res.json({ ok: false, error });
   }
 };
 
-const verify_token = (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) return res.json({ ok: false, message: "Token not provided" });
-
-  verify(token, jwt_secret, (err, decoded) => {
-    if (err) {
-      console.error("Token verification error:", err);
-      return res.json({ ok: false, message: "Token verification failed" });
-    }
-    return res.json({ ok: true, decoded });
-  });
-};
-
-export default { login, verify_token };
+export default { login };

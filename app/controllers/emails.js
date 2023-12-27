@@ -1,19 +1,21 @@
-// const nodemailer = require("nodemailer");
-import nodemailer from "nodemailer";
+import {
+  createChannelWrapper,
+  mqConnectionEmitter,
+  publishMessage,
+} from "../services/rabbitmq.js";
 
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.NODEMAILER_EMAIL,
-    pass: process.env.NODEMAILER_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
 const URL = "http://localhost:3000/enter/";
 
-const send_magic_link = async (email, link, which) => {
+mqConnectionEmitter.on("connected", () => {
+  createChannelWrapper({
+    name: "email",
+    exchange: "email",
+    queue: "email_queue_email",
+    routingKey: "email.send",
+  });
+});
+
+const sendMagicLink = async (email, link, which) => {
   if (which == "signup") {
     var subj = "Your sign up link",
       body =
@@ -33,22 +35,8 @@ const send_magic_link = async (email, link, which) => {
     subject: subj,
     html: body,
   };
-  try {
-    transporter.verify(function (error, success) {
-      if (error) {
-        console.log(success);
-      } else {
-        console.log("Server is ready to take our messages");
-      }
-    });
 
-    const response = await transporter.sendMail(mailOptions);
-    console.log("Link sent 📬");
-    return { ok: true, message: "email sent" };
-  } catch (err) {
-    console.log("Something didn't work out 😭", err);
-    return { ok: false, message: err };
-  }
+  publishMessage("email", mailOptions);
 };
 
-export default send_magic_link;
+export default sendMagicLink;
