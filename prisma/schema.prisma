@@ -8,57 +8,53 @@ datasource db {
 }
 
 model User {
-    id               String            @id @default(uuid())
-    user_id          Int               @default(autoincrement())
-    email            String            @unique
-    Name             String?           @default("Anonymous")
-    MagicLink        String?           @default(uuid()) // Assuming you want to generate a UUID by default
-    MagicLinkExpired Boolean           @default(false)
-    createdAt        DateTime          @default(now())
-    updatedAt        DateTime          @updatedAt
-    api_keys         Api_keys[]
-    prompt_template  Prompt_template[]
+    id               String   @id @default(uuid())
+    email            String   @unique
+    magicLink        String?  @default(uuid())
+    magicLinkExpired Boolean  @default(false)
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+    apiKey           ApiKey[]
     prompt           Prompt[]
 }
 
-model Api_keys {
-    id              String            @id @default(uuid())
-    name            String            @unique
-    user            User              @relation(fields: [user_id], references: [id])
-    user_id         String
-    key             String
-    createdAt       DateTime          @default(now())
-    updatedAt       DateTime          @updatedAt
-    prompt_template Prompt_template[]
+model ApiKey {
+    id        String   @id @default(uuid())
+    name      String   @unique
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    key       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("api_key")
 }
 
-model Prompt_template {
-    id                          String    @id @default(uuid())
-    user                        User?     @relation(fields: [user_id], references: [id])
-    user_id                     String?
+model PromptTemplate {
+    id                          String   @id @default(uuid())
+    url                         String?
     title                       String?
-    textfields                  String?
-    CSS_frameworks              String?
-    promptTemplateLoginRegister String    @default("This is a response of random template")
-    llm_name                    Api_keys? @relation(fields: [llm_name_id], references: [name])
-    llm_name_id                 String?
-    api_key_id                  String?
-    createdAt                   DateTime  @default(now())
-    updatedAt                   DateTime  @updatedAt
+    textfield                   String?
+    cssFrameworks               String?
+    promptTemplateLoginRegister String   @default("This is a response of random template")
+    createdAt                   DateTime @default(now())
+    updatedAt                   DateTime @updatedAt
+    prompt                      Prompt[]
+
+    @@map("prompt_template")
 }
 
 model Prompt {
-    id                 String   @id @default(uuid())
-    user               User?    @relation(fields: [user_id], references: [id])
-    user_id            String?
-    prompt_id          String?
-    template_name      String
-    pTLoginRegister    String?
-    prompt_template_id Int      @default(autoincrement())
-    status             Boolean?
-    response           String?
-    parameters         String?
-    createdAt          DateTime @default(now())
-    updatedAt          DateTime @updatedAt
-    api_keysId         String?
+    id               String          @id @default(uuid())
+    user             User?           @relation(fields: [userId], references: [id])
+    userId           String?
+    promptTemplate   PromptTemplate? @relation(fields: [promptTemplateId], references: [id])
+    promptTemplateId String?
+    llmList          Json?
+    text             String?
+    status           Boolean?
+    response         String?
+    parameters       Json?
+    createdAt        DateTime        @default(now())
+    updatedAt        DateTime        @updatedAt
 }
