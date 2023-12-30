@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../../prisma/index.js";
 
-const saveApiKeys = async (req, res) => {
+const upsertApiKeys = async (req, res) => {
   try {
     const { PalmApiKey, OpenAiApiKey, BardApiKey, CodyApiKey } = req.body;
 
@@ -34,4 +33,16 @@ const saveApiKeys = async (req, res) => {
   }
 };
 
-export { saveApiKeys };
+const getApiKeys = async (req, res) => {
+  try {
+    const apiKeys = await prisma.apiKey.findMany({
+      where: { userId: req.userId },
+    });
+    res.json(apiKeys);
+  } catch (error) {
+    console.error("Error saving API keys:", error);
+    res.status(500).json({ error: "Could not save API keys" });
+  }
+};
+
+export { upsertApiKeys, getApiKeys };

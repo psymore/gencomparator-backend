@@ -1,17 +1,17 @@
 Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating Login and Register components. Here’s elements (components) you must implement, listed for register and login components also with the necessary functionality, design and other details:
 Application Requirements:
-Page Title: A page title must be on the top of every element which is “Welcome My App”.
-Login Component: Includes "Username", "Password", input fields along with a "Login" button.
-Register Component: Includes "Username," "Password," "Password again" input fields along with a "Register" button.
-Bottom Text: Both pages need text at the bottom with conditional links: "Do you have an account? Login" and "If you don’t have an account, Register." Implement switchable functionality using conditional rendering with MUI Links.
+{{#titleActive}}Page Title: A page title must be on the top of every element which is “{{title}}”.{{/titleActive}}
+Login Component: Includes {{"Username"}}, {{"Password"}} input fields along with a "Login" button.
+Register Component: Includes {{"Username"}}, {{"Password"}}, {{"Password again"}} input fields along with a "Register" button.
+Bottom Text: Both pages need text at the bottom with conditional links: "Do you have an account? Login" and "If you don’t have an account, Register." Implement switchable functionality using conditional rendering with {{#mui}}MUI Links{{/mui}}{{#plainJs}}<a> tags{{/plainJs}}.
 Functionality: There must be two components inside this single page React app and they must conditionally be rendered by clicking the Bottom Text. When a user is on the login page, Login Component must be rendered and when user is on the register page, Register Component must be rendered.
 Design Details:
-Component Usage: Utilize Material UI (MUI) TextField components for input fields and MUI Link components for links. Apply styling using inline sx props for consistent design.
-Field Styling: Ensure Material UI TextField components have a white background color.
-Layout Structure: Wrap the entire app within only one MUI Grid container while placing each individual component (TextField, Typography, Link, and Button) in a Grid item with an xs prop set to 8.
-Alignment and Margin: Align all Grid items in a column layout while ensuring a 2px container spacing.
+Component Usage: Utilize {{#mui}}Material UI (MUI) TextField components{{/mui}}{{#plainJs}}plain javascript{{/plainJs}} for input fields and {{MUI Link components}} for links. Apply styling using inline {{sx}} props for consistent design.
+Field Styling: Ensure {{#mui}}Material UI TextField{{/mui}}{{#plainJs}}input field{{/plainJs}} components have a white background color.
+Layout Structure: Wrap the entire app within {{#mui}}only one MUI Grid container{{/mui}}{{#plainJs}}a div{{/plainJs}} while placing each individual component{{#mui}}(TextField, Typography, Link, and Button){{/mui}} in a {{#mui}}Grid item with an xs prop set to 8{{/mui}}{{#plainJs}}div with a width prop set to 30vw{{/plainJs}}.
+Alignment and Margin: Align all {{#mui}}Grid items{{/mui}}{{#plainJs}}divs{{/plainJs}} in a column layout while ensuring a {{#mui}}2px container spacing{{/mui}}{{#plainJs}}10px padding{{/plainJs}}.
 Background Design: Create a linear gradient background from left to right with colors "#FFFFFF" to "#2ccefb" using the background property.
 Additional Guidance:
 Code Organization: Consolidate all code into a single modified App.js file, following React's standard structure.
-Styling Approach: Utilize Material UI grids and use only one Grid container for the wrap entire app.
+Styling Approach: Utilize {{#mui}}Material UI grids and use only one Grid container for the wrap entire app{{/mui}}{{#plainJs}}div tags when necessary{{/plainJs}}. 
 Now, please carefully produce the code, adhering to the outlined requirements.

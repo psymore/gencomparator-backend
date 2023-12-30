@@ -2,7 +2,6 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT DEFAULT 'Anonymous',
     "magicLink" TEXT,
     "magicLinkExpired" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +16,7 @@ CREATE TABLE "api_key" (
     "name" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "key" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "api_key_pkey" PRIMARY KEY ("id")
@@ -26,10 +25,11 @@ CREATE TABLE "api_key" (
 -- CreateTable
 CREATE TABLE "prompt_template" (
     "id" TEXT NOT NULL,
+    "url" TEXT,
     "title" TEXT,
     "textfield" TEXT,
     "cssFrameworks" TEXT,
-    "promptTemplateLoginRegister" TEXT NOT NULL DEFAULT 'This is a response of random template',
+    "filledTemplate" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -41,11 +41,11 @@ CREATE TABLE "Prompt" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "promptTemplateId" TEXT,
-    "templateName" TEXT NOT NULL,
-    "pTLoginRegister" TEXT,
+    "llmList" JSONB,
+    "text" TEXT,
     "status" BOOLEAN,
     "response" TEXT,
-    "parameters" TEXT,
+    "parameters" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
