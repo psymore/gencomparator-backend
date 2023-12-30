@@ -23,7 +23,7 @@ model ApiKey {
     name      String   @unique
     user      User     @relation(fields: [userId], references: [id])
     userId    String
-    key       String
+    key       String /// @encrypted
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -31,15 +31,17 @@ model ApiKey {
 }
 
 model PromptTemplate {
-    id                          String   @id @default(uuid())
-    url                         String?
-    title                       String?
-    textfield                   String?
-    cssFrameworks               String?
-    promptTemplateLoginRegister String   @default("This is a response of random template")
-    createdAt                   DateTime @default(now())
-    updatedAt                   DateTime @updatedAt
-    prompt                      Prompt[]
+    id            String   @id @default(uuid())
+    url           String?
+    name          String?
+    description   String?
+    titleExists   Boolean?
+    isActive      Boolean?
+    fields        Json?
+    cssFrameworks Json?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+    prompt        Prompt[]
 
     @@map("prompt_template")
 }
