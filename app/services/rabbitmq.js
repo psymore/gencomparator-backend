@@ -1,5 +1,7 @@
 import amqp from "amqp-connection-manager";
 
+import "dotenv/config";
+
 const { RABBITMQ_PASS, RABBITMQ_USER, RABBITMQ_HOST, RABBITMQ_PORT } =
   process.env;
 
@@ -63,7 +65,9 @@ const createChannelWrapper = ({ name, exchange, queue, routingKey }) => {
 const publishMessage = async (channelName, data) => {
   try {
     if (!channelWrapper?.[channelName]) {
-      console.log(`No channel wrapper for this channel name: ${channelName}.`);
+      console.log(
+        `No channel wrapper for this channel name: ${channelWrapper}.`
+      );
       return;
     }
 

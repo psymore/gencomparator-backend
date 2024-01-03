@@ -2,8 +2,6 @@ import prisma from "../../prisma/index.js";
 
 const createPromptTemplates = async (req, res) => {
   try {
-    // const {} = req.body;
-
     const requestData = [
       {
         name: "Login-Register Page",
@@ -54,13 +52,15 @@ const createPromptTemplates = async (req, res) => {
       },
     ];
 
-    const promptTemplateList = await prisma.promptTemplate.createMany({
-      data: requestData,
-    });
-    res.status(201).json({
-      message: "Prompt templates created successfully.",
-      promptTemplateList,
-    });
+    const foundTemplates = await prisma.promptTemplate.findMany();
+
+    if (foundTemplates.length === 0) {
+      const promptTemplateList = await prisma.promptTemplate.createMany({
+        data: requestData,
+      });
+      res.json({ promptTemplateList });
+      return;
+    }
   } catch (error) {
     console.error("Error creating prompt templates:", error);
     res.status(500).json({ error: "Could not create prompt templates" });
