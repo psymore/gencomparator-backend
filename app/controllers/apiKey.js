@@ -1,4 +1,4 @@
-import prisma from "../../prisma/index.js";
+import prisma, { prismaEncrypted } from "../../prisma/index.js";
 
 const upsertApiKeys = async (req, res) => {
   try {
@@ -13,7 +13,7 @@ const upsertApiKeys = async (req, res) => {
 
     const savedKeys = await Promise.all(
       keysToSave.map(async keyData => {
-        const apiKeys = await prisma.apiKey.upsert({
+        const apiKeys = await prismaEncrypted.apiKey.upsert({
           where: { userId: req.userId, name: keyData.llmName },
           create: {
             userId: req.userId,
@@ -40,8 +40,8 @@ const getApiKeys = async (req, res) => {
     });
     res.json(apiKeys);
   } catch (error) {
-    console.error("Error saving API keys:", error);
-    res.status(500).json({ error: "Could not save API keys" });
+    console.error("Error fetching API keys:", error);
+    res.status(500).json({ error: "Could not fetch API keys" });
   }
 };
 
