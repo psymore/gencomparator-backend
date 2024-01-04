@@ -2,29 +2,45 @@ import fs from "fs-extra";
 import Mustache from "mustache";
 import prisma from "../../prisma/index.js";
 
-const getPromptTemplateId = async () => {
+import {
+  createChannelWrapper,
+  mqConnectionEmitter,
+  publishMessage,
+} from "../services/rabbitmq.js";
+
+mqConnectionEmitter.on("connected", () => {
+  createChannelWrapper({
+    name: "prompt",
+    exchange: "prompt",
+    queue: "prompt_queue_prompt",
+    routingKey: "prompt.send",
+  });
+});
+
+const sendPrompt = async prompt => {
   try {
-    const template = await prisma.promptTemplate.findFirst({});
-    console.log(template.id);
-    return template.id;
+    // Publish a message to the 'prompt' channel and capture the response
+    const response = await publishMessage("prompt", prompt);
+    console.log("Prompt message sent successfully!");
+    console.log("Response:", response); // Log the response from publishing the message
+    return response; // Return the response if needed for further processing
   } catch (error) {
-    console.error(error);
-    return null;
+    console.error("Error sending prompt message:", error);
+    return null; // Return null or handle the error as needed
   }
 };
 
 const createPrompt = async (req, res) => {
   try {
-    const templateId = await getPromptTemplateId();
-
     const parameters = req.body;
-
+    console.log(parameters.promptTemplateId);
     const templateText = fs.readFileSync(
-      "app/prompt-templates/LoginRegister.txt",
+      `app/prompt-templates/${parameters.promptTemplateId}.txt`,
       "utf-8"
     );
 
     const arrangedParameters = {
+      promptTemplateId: parameters.promptTemplateId,
       title: parameters.title,
       username: parameters.fields.includes("Username"),
       password: parameters.fields.includes("Password"),
@@ -33,7 +49,6 @@ const createPrompt = async (req, res) => {
       css: parameters.style,
       titleActive: parameters.titleExists,
     };
-    console.log(parameters.titleExists);
 
     const prompt = {
       templateName: "LoginRegister",
@@ -44,11 +59,11 @@ const createPrompt = async (req, res) => {
       data: {
         text: prompt.text,
         parameters: parameters,
-        promptTemplateId: templateId,
+        promptTemplateId: parameters.promptTemplateId,
       },
     });
+    console.log(prompt);
 
-    console.log("req.body:", req.body);
     res.status(201).json({
       message: "Prompt created successfully.",
       text: createdPrompt,
@@ -61,8 +76,9 @@ const createPrompt = async (req, res) => {
 
 const getPrompt = async (req, res) => {
   try {
-    const prompt = await prisma.prompt.findFirst({});
-    console.log(prompt.text);
+    const prompt = await prisma.prompt.findFirst({
+      orderBy: { createdAt: "desc" },
+    });
     res.json(prompt.text);
   } catch (error) {
     console.error(error);
@@ -70,4 +86,4 @@ const getPrompt = async (req, res) => {
   }
 };
 
-export { createPrompt, getPrompt };
+export { createPrompt, getPrompt, sendPrompt };
