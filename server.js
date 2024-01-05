@@ -40,7 +40,7 @@ app.use(getPrompt);
 import getPromptTemplates from "./app/routes/promptTemplate.js";
 app.use(getPromptTemplates);
 
-// import { useGemini } from "./app/llms/generativeAi.js";
+// import useGemini from "./app/llms/generativeAi.js";
 // useGemini();
 
 // import { useChatGpt } from "./app/llms/openAi.js";

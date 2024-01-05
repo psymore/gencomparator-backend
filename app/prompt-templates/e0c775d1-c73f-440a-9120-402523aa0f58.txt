@@ -1,0 +1,15 @@
+Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating a Register 
+component. Here’s elements (components) you must implement, listed for Register component also with the necessary functionality, design and other details:
+Application Requirements:
+{{#titleActive}}Page Title: A page title must be on the top of every element which is “{{title}}”.{{/titleActive}}
+Register Component: Includes {{#username}}"Username", {{/username}}{{#password}}"Password"{{/password}} input fields along with a "Register" button.
+Design Details:
+Component Usage: Apply styling using inline {{#mui}}sx{{/mui}}{{#css}}style{{/css}} props for consistent design.
+Field Styling: Ensure {{#mui}}Material UI TextField{{/mui}}{{#css}}input field{{/css}} components have a white background color.
+Layout Structure: Wrap the entire app within {{#mui}}only one MUI Grid container{{/mui}}{{#css}}a div{{/css}} while placing each individual component{{#mui}}(TextField, Typography, and Button){{/mui}} in a {{#mui}}Grid item with an xs prop set to 8{{/mui}}{{#css}}div with a width prop set to 30vw{{/css}}.
+Alignment and Margin: Align all {{#mui}}Grid items{{/mui}}{{#css}}divs{{/css}} in a column layout while ensuring a {{#mui}}2px container spacing{{/mui}}{{#css}}10px padding{{/css}}.
+Background Design: Create a linear gradient background from left to right with colors "#FFFFFF" to "#2ccefb" using the background property.
+Additional Guidance:
+Code Organization: Consolidate all code into a single modified App.js file, following React's standard structure.
+Styling Approach: Utilize {{#mui}}Material UI grids and use only one Grid container for the wrap entire app{{/mui}}{{#css}}div tags when necessary{{/css}}. 
+Now, please carefully produce the code, adhering to the outlined requirements.
