@@ -12,16 +12,12 @@ const verifyToken = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return res.json({ ok: false, message: "Token not provided" });
 
-    console.log(token);
-
     verify(token, jwtSecret, (err, decoded) => {
       if (err) {
         throw new Error("Token verification failed");
       }
 
       req.userId = decoded.userId;
-
-      console.log(decoded);
     });
 
     next();

@@ -2,16 +2,6 @@ import fs from "fs-extra";
 import Mustache from "mustache";
 import prisma from "../../prisma/index.js";
 
-<<<<<<< Updated upstream
-const getPromptTemplateId = async () => {
-  try {
-    const template = await prisma.promptTemplate.findFirst({});
-    console.log(template.id);
-    return template.id;
-  } catch (error) {
-    console.error(error);
-    return null;
-=======
 import {
   createChannelWrapper,
   mqConnectionEmitter,
@@ -52,25 +42,20 @@ const sendPrompt = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Error sending prompt message:", error);
->>>>>>> Stashed changes
   }
 };
 
 const createAndSendPrompt = async (req, res) => {
   try {
-    const templateId = await getPromptTemplateId();
-
     const parameters = req.body;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
+    console.log(parameters.promptTemplateId);
     const templateText = fs.readFileSync(
-      "app/prompt-templates/LoginRegister.txt",
+      `app/prompt-templates/${parameters.promptTemplateId}.txt`,
       "utf-8"
     );
 
     const arrangedParameters = {
+      promptTemplateId: parameters.promptTemplateId,
       title: parameters.title,
       username: parameters.fields.includes("Username"),
       password: parameters.fields.includes("Password"),
@@ -79,32 +64,16 @@ const createAndSendPrompt = async (req, res) => {
       css: parameters.style,
       titleActive: parameters.titleExists,
     };
-    console.log(parameters.titleExists);
 
     const prompt = {
       templateName: "LoginRegister",
       text: Mustache.render(templateText, arrangedParameters),
     };
 
-<<<<<<< Updated upstream
-    const createdPrompt = await prisma.prompt.create({
-      data: {
-        text: prompt.text,
-        parameters: parameters,
-        promptTemplateId: templateId,
-      },
-    });
-
-    console.log("req.body:", req.body);
-    res.status(201).json({
-      message: "Prompt created successfully.",
-      text: createdPrompt,
-=======
     console.log("MY req:", req.userId);
 
     const existingPrompt = await prisma.prompt.findFirst({
       where: { userId: req.userId },
->>>>>>> Stashed changes
     });
 
     console.log(existingPrompt);
@@ -151,11 +120,10 @@ const createAndSendPrompt = async (req, res) => {
 
 const getPrompt = async (req, res) => {
   try {
-<<<<<<< Updated upstream
-    const prompt = await prisma.prompt.findFirst({});
-    console.log(prompt.text);
+    const prompt = await prisma.prompt.findFirst({
+      orderBy: { createdAt: "desc" },
+    });
     res.json(prompt.text);
-=======
     const prompts = await prisma.prompt.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -179,16 +147,12 @@ const prepareToSendPrompt = async (req, res) => {
 
     console.log(promptText);
     return promptText, promptTemplateId;
->>>>>>> Stashed changes
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-<<<<<<< Updated upstream
-export { createPrompt, getPrompt };
-=======
 const getResponse = async (req, res) => {
   try {
     const llmResponse = await prisma.prompt.findMany({
@@ -202,4 +166,3 @@ const getResponse = async (req, res) => {
 };
 
 export { getPrompt, createAndSendPrompt, getResponse };
->>>>>>> Stashed changes

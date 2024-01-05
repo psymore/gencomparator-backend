@@ -1,5 +1,5 @@
-Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating a 
- component. Here’s elements (components) you must implement, listed for Register component also with the necessary functionality, design and other details:
+Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating a Register 
+component. Here’s elements (components) you must implement, listed for Register component also with the necessary functionality, design and other details:
 Application Requirements:
 {{#titleActive}}Page Title: A page title must be on the top of every element which is “{{title}}”.{{/titleActive}}
 Register Component: Includes {{#username}}"Username", {{/username}}{{#password}}"Password"{{/password}} input fields along with a "Register" button.

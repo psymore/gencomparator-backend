@@ -11,8 +11,8 @@ app.use(cors(corsOptions));
 app.use(json());
 
 import {
-  default as upsertApiKeys,
   default as getApiKeys,
+  default as upsertApiKeys,
 } from "./app/routes/apiKey.js";
 
 app.use(upsertApiKeys);
@@ -30,15 +30,8 @@ createPromptTemplates();
 import promptTemplateRoutes from "./app/routes/promptTemplate.js";
 app.use(promptTemplateRoutes);
 
-import {
-  default as getPrompt,
-  default as promptRoutes,
-} from "./app/routes/prompt.js";
+import promptRoutes from "./app/routes/prompt.js";
 app.use(promptRoutes);
-app.use(getPrompt);
-
-import getPromptTemplates from "./app/routes/promptTemplate.js";
-app.use(getPromptTemplates);
 
 // import useGemini from "./app/llms/generativeAi.js";
 // useGemini();
