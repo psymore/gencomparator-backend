@@ -17,38 +17,10 @@ mqConnectionEmitter.on("connected", () => {
   });
 });
 
-const sendPrompt = async (req, res, next) => {
-  try {
-    const response = await prepareToSendPrompt(); // Fetch last created prompt
-    console.log(req.userId);
-    console.log(req);
-    // console.log("Response:", getPrompt());
-    if (response) {
-      const message = {
-        userId: req.userId,
-        promptText: response,
-        promptTemplateId: req.promptTemplateId,
-      };
-      console.log(message);
-      const sendPromptToLlms = await publishMessage(
-        "prompt",
-        message.promptText,
-        message.promptTemplateId
-        // message.userId
-      ); // Send the prompt text
-      console.log("Prompt message sent successfully!");
-      console.log("Sent Response:", sendPromptToLlms); // Log the sent response
-    }
-    next();
-  } catch (error) {
-    console.error("Error sending prompt message:", error);
-  }
-};
-
 const createAndSendPrompt = async (req, res) => {
   try {
     const parameters = req.body;
-    console.log(parameters.promptTemplateId);
+
     const templateText = fs.readFileSync(
       `app/prompt-templates/${parameters.promptTemplateId}.txt`,
       "utf-8"
@@ -70,13 +42,13 @@ const createAndSendPrompt = async (req, res) => {
       text: Mustache.render(templateText, arrangedParameters),
     };
 
-    console.log("MY req:", req.userId);
+    console.log("createAndSendPrompt req.userId:", req.userId);
 
     const existingPrompt = await prisma.prompt.findFirst({
       where: { userId: req.userId },
     });
 
-    console.log(existingPrompt);
+    console.log("existingPrompt", existingPrompt);
     if (!existingPrompt) {
       const createdPrompt = await prisma.prompt.create({
         data: {
@@ -86,14 +58,19 @@ const createAndSendPrompt = async (req, res) => {
           promptTemplateId: parameters.promptTemplateId,
         },
       });
-      const sendPromptToLlms = await publishMessage("prompt", createdPrompt);
-      return res.json({
-        message: "Created a new prompt and sent to llm",
-        prompt: createdPrompt,
-      });
+      console.log("existingPrompt", createdPrompt.id);
+
+      const sendPromptToLlms = await publishMessage("prompt", createdPrompt.id);
+      console.log("Message published.", createdPrompt.id);
+
+      // return res.json({
+      //   message: "Created a new prompt and sent to llm",
+      //   prompt: createdPrompt,
+      // });
     }
+
     if (existingPrompt) {
-      const updatedPrompt = await prisma.prompt.create({
+      const createdPrompt = await prisma.prompt.create({
         data: {
           userId: req.userId,
           text: prompt.text,
@@ -101,15 +78,14 @@ const createAndSendPrompt = async (req, res) => {
           promptTemplateId: parameters.promptTemplateId,
         },
       });
-      const sendPromptToLlms = await publishMessage("prompt", updatedPrompt);
-      console.log("Message published.");
-      return res.json({
-        message: "Created a new prompt and sent to llm",
-        prompt: updatedPrompt,
-      });
-    }
+      const sendPromptToLlms = await publishMessage("prompt", createdPrompt.id);
+      console.log("Message published.", createdPrompt.id);
 
-    console.log("Updated existing prompt:", updatedPrompt);
+      // return res.json({
+      //   message: "Created a new prompt and sent to llm",
+      //   prompt: updatedPrompt,
+      // });
+    }
 
     res.json({ message: "An error ocurred." });
   } catch (error) {
@@ -120,10 +96,6 @@ const createAndSendPrompt = async (req, res) => {
 
 const getPrompt = async (req, res) => {
   try {
-    const prompt = await prisma.prompt.findFirst({
-      orderBy: { createdAt: "desc" },
-    });
-    res.json(prompt.text);
     const prompts = await prisma.prompt.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -131,22 +103,6 @@ const getPrompt = async (req, res) => {
     const promptTexts = prompts.map(prompt => prompt.text);
 
     res.status(200).json(promptTexts);
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-const prepareToSendPrompt = async (req, res) => {
-  try {
-    const latestPrompt = await prisma.prompt.findFirst({
-      orderBy: { createdAt: "desc" },
-    });
-
-    const promptText = latestPrompt ? latestPrompt.text : null;
-    const promptTemplateId = latestPrompt.promptTemplateId;
-
-    console.log(promptText);
-    return promptText, promptTemplateId;
   } catch (error) {
     console.error(error);
     return null;
