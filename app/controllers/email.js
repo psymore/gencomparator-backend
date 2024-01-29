@@ -17,17 +17,17 @@ mqConnectionEmitter.on("connected", () => {
 
 const sendMagicLink = async (email, link, which) => {
   if (which == "signup") {
-    var subj = "Your sign up link",
+    var subj = "Your sign up link for Gencomparator",
       body =
-        "<p>Hello friend and welcome to our website. This is your link to confirm your account: " +
+        "<p>Hello and welcome to our website. This is your link to confirm your account: " +
         (URL + email + "/" + link) +
-        "</p><p>Needless to remind you not to share this link with anyone 🤫</p>";
+        "</p><p>Please do not to share this link with anyone.</p>";
   } else {
-    var subj = "Your sign in link",
+    var subj = "Your sign in link for Gencomparator",
       body =
-        "<p>Hello friend and welcome back. This is your link to sign in to your account: " +
+        "<p>Hello and welcome back. This is your link to sign in to your account: " +
         (URL + email + "/" + link) +
-        "</p><p>Needless to remind you not to share this link with anyone 🤫</p>";
+        "</p><p>Please do not to share this link with anyone.</p>";
   }
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,

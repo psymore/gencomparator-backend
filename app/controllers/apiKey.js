@@ -2,31 +2,33 @@ import prisma, { prismaEncrypted } from "../../prisma/index.js";
 
 const upsertApiKeys = async (req, res) => {
   try {
-    const { PalmApiKey, OpenAiApiKey, BardApiKey, CodyApiKey } = req.body;
+    const { GeminiKey, OpenAiKey, AlephAlphaKey } = req.body;
+
+    console.log(req.body);
 
     const keysToSave = [
-      { llmName: "PaLM", key: PalmApiKey },
-      { llmName: "Open", key: OpenAiApiKey },
-      { llmName: "Bard", key: BardApiKey },
-      { llmName: "Cody", key: CodyApiKey },
+      { llmName: "Gemini", key: GeminiKey },
+      { llmName: "OpenAi", key: OpenAiKey },
+      { llmName: "AlephAlpha", key: AlephAlphaKey },
+      // { llmName: "Cody", key: CodyApiKey },
     ];
 
-    const savedKeys = await Promise.all(
-      keysToSave.map(async keyData => {
-        const apiKeys = await prismaEncrypted.apiKey.upsert({
-          where: { userId: req.userId, name: keyData.llmName },
-          create: {
-            userId: req.userId,
-            name: keyData.llmName,
-            key: keyData.key,
-          },
-          update: { userId: req.userId, key: keyData.key },
-        });
-        return apiKeys;
-      })
-    );
+    keysToSave.forEach(async keyData => {
+      if (!keyData.key) {
+        return;
+      }
+      await prismaEncrypted.apiKey.upsert({
+        where: { userId: req.userId, name: keyData.llmName },
+        create: {
+          userId: req.userId,
+          name: keyData.llmName,
+          key: keyData.key,
+        },
+        update: { userId: req.userId, key: keyData.key },
+      });
+    });
 
-    res.json(savedKeys);
+    res.json("ok");
   } catch (error) {
     console.error("Error saving API keys:", error);
     res.status(500).json({ error: "Could not save API keys" });
@@ -35,9 +37,10 @@ const upsertApiKeys = async (req, res) => {
 
 const getApiKeys = async (req, res) => {
   try {
-    const apiKeys = await prisma.apiKey.findMany({
+    const apiKeys = await prismaEncrypted.apiKey.findMany({
       where: { userId: req.userId },
     });
+
     res.json(apiKeys);
   } catch (error) {
     console.error("Error fetching API keys:", error);

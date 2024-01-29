@@ -1,7 +1,8 @@
-<p>Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating a Login component. Here’s elements (components) you must implement, listed for Login component also with the necessary functionality, design and other details:</p>
+<p>Act as a front-end JavaScript developer. Your task is to build a single page React app using functional components in ReactJS, specifically focusing on creating a Login component. Ignore p and b tags on this html prompt.</p>
+<p>Implement just the code, without making any comments and explanations. Here’s elements (components) you must implement, listed for Login component also with the necessary functionality, design and other details:</p>
 <p><b>Application Requirements:</b></p>
-<p><b>{{#titleActive}}Page Title:</b> A page title must be on the top of every element which is “{{title}}”.{{/titleActive}}</p>
-<p><b>Login Component:</b> Includes {{#username}}"Username", {{/username}}{{#password}}"Password"{{/password}} input fields along with a "Login" button.</p>
+{{#titleActive}}<p><b>Page Title:</b> A page title must be on the top of every element which is “{{title}}”.</p>{{/titleActive}}
+<p><b>Login Component:</b> Includes {{#username}}"Username", {{/username}}{{#email}}"Email", {{/email}}{{#password}}"Password"{{/password}} input fields along with a "Login" button.</p>
 <p><b>Design Details:</b></p>
 <p><b>Component Usage:</b> Apply styling using inline {{#mui}}sx{{/mui}}{{#css}}style{{/css}} props for consistent design.</p>
 <p><b>Field Styling:</b> Ensure {{#mui}}Material UI TextField{{/mui}}{{#css}}input field{{/css}} components have a white background color.</p>
@@ -11,4 +12,4 @@
 <p><b>Additional Guidance:</b></p>
 <p><b>Code Organization:</b> Consolidate all code into a single modified App.js file, following React's standard structure.</p>
 <p><b>Styling Approach:</b> Utilize {{#mui}}Material UI grids and use only one Grid container for the wrap entire app{{/mui}}{{#css}}div tags when necessary{{/css}}. </p>
-<p>Now, please carefully produce the code, adhering to the outlined requirements.</p>
+<p>Now, please carefully produce the code without making any comments and explanations, adhering to the outlined requirements.</p>

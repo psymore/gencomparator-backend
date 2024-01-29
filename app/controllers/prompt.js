@@ -25,15 +25,15 @@ const createAndSendPrompt = async (req, res) => {
       `app/prompt-templates/${parameters.promptTemplateId}.txt`,
       "utf-8"
     );
-
+    console.log(parameters);
     const arrangedParameters = {
       promptTemplateId: parameters.promptTemplateId,
       title: parameters.title,
       username: parameters.fields.includes("Username"),
       password: parameters.fields.includes("Password"),
       passwordAgain: parameters.fields.includes("Password Again"),
-      mui: parameters.style,
-      css: parameters.style,
+      mui: parameters.style.mui,
+      css: parameters.style.css,
       titleActive: parameters.titleExists,
     };
 
@@ -97,28 +97,34 @@ const createAndSendPrompt = async (req, res) => {
 const getPrompt = async (req, res) => {
   try {
     const prompts = await prisma.prompt.findMany({
+      select: {
+        parameters: true,
+        text: true,
+        createdAt: true,
+        promptResponse: true,
+      },
       orderBy: { createdAt: "desc" },
+      where: { userId: req.userId },
     });
 
-    const promptTexts = prompts.map(prompt => prompt.text);
-
-    res.status(200).json(promptTexts);
+    res.status(200).json(prompts);
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-const getResponse = async (req, res) => {
-  try {
-    const llmResponse = await prisma.prompt.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-    const llmResponses = llmResponse.map(response => response.response);
-    res.status(200).json(llmResponses);
-  } catch (error) {
-    console.error(error);
-  }
-};
+// const getResponse = async (req, res) => {
+//   try {
+//     const llmResponses = await prisma.prompt.findMany({
+//       select: { text: true, createdAt: true },
+//       orderBy: { createdAt: "desc" },
+//       where: { userId: req.userId },
+//     });
+//     res.status(200).json(llmResponses);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
-export { getPrompt, createAndSendPrompt, getResponse };
+export { createAndSendPrompt, getPrompt };

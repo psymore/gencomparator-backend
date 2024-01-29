@@ -67,12 +67,15 @@ model Prompt {
 }
 
 model PromptResponse {
-    prompt    Prompt?  @relation(fields: [promptId], references: [id])
-    promptId  String
-    llmName   String
-    response  String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    prompt            Prompt?  @relation(fields: [promptId], references: [id])
+    promptId          String
+    llmName           String
+    response          String?
+    executionTime     Int?
+    isChatGptFinished Boolean?
+    isGeminiFinished  Boolean?
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
 
     @@id([promptId, llmName])
     @@map("prompt_response")

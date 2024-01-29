@@ -10,13 +10,8 @@ app.use(cors(corsOptions));
 // app.use(require("express").urlencoded({ extended: true }));
 app.use(json());
 
-import {
-  default as getApiKeys,
-  default as upsertApiKeys,
-} from "./app/routes/apiKey.js";
-
-app.use(upsertApiKeys);
-app.use(getApiKeys);
+import apiKeyRoutes from "./app/routes/apiKey.js";
+app.use(apiKeyRoutes);
 
 import userRoutes from "./app/routes/user.js";
 app.use("/users", userRoutes);

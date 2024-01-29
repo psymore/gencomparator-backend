@@ -58,7 +58,7 @@ const createPromptTemplates = async (req, res) => {
       const promptTemplateList = await prisma.promptTemplate.createMany({
         data: requestData,
       });
-      res.json({ promptTemplateList });
+      // res.json({ promptTemplateList });
       return;
     }
   } catch (error) {
